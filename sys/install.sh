@@ -68,7 +68,7 @@ cd ../
 
 lines=$(find /usr/include /usr/local/include -iname fuzzy.h | wc -l)
 if [ ! $lines = 0 ]; then
-  sudo pip3 install git+https://github.com/kbandla/pydeep
+  sudo -H pip3 install git+https://github.com/kbandla/pydeep
 fi
 
 SNAKE_DIR=`python3 -c 'import imp; print(imp.find_module("snake")[1])'`
