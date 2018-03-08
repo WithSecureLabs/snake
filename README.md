@@ -33,8 +33,8 @@ For more information, please see: [Wiki](https://github.com/countercept/snake-co
 There is more to Snake than just the above, below is a summary:
 
 - [snake](https://github.com/countercept/snake-core): The malware storage zoo.
- - core: The main guts of Snake and the RESTful API.
- - pit: The celery based workers that are used to execute static based commands.
+  - core: The main guts of Snake and the RESTful API.
+  - pit: The celery based workers that are used to execute static based commands.
 - [snake-charmer](https://github.com/countercept/snake-charmer): The regression based test suite.
 - [snake-scales](https://github.com/countercept/snake-scales): The official repository of snake scales (plugins).
 - [snake-skin](https://github.com/countercept/snake-skin): The Web UI.
