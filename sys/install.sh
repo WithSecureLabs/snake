@@ -74,7 +74,8 @@ fi
 SNAKE_DIR=`python3 -c 'import imp; print(imp.find_module("snake")[1])'`
 
 # Create user
-sudo useradd -r -s /sbin/nologin snaked
+# NOTE: use the cache dir for the home folder, whats the harm
+sudo useradd -r -s /sbin/nologin -d /var/cache/snake snaked
 
 # Create directories
 sudo mkdir -p /var/cache/snake
