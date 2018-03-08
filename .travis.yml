@@ -1,0 +1,14 @@
+stages:
+  - deploy
+
+services:
+  redis-server
+
+sudo: required
+
+jobs:
+  include:
+    - stage: deploy
+      script: .travis/install.sh
+    - stage: deploy
+      script: .travis/user.sh
