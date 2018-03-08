@@ -1,0 +1,6 @@
+[submodule "snake-core"]
+	path = snake-core
+	url = https://github.com/countercept/snake-core
+[submodule "snake-skin"]
+	path = snake-skin
+	url = https://github.com/countercept/snake-skin
