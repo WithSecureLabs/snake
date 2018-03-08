@@ -50,17 +50,39 @@ There are a few dependencies to install Snake and Web UI (Snake Skin).
 - (Snake) MongoDB 3.4 or greater
 - (Snake) Python 3.5 or greater
 - (Snake) Redis
-- (Snake Skin) NodeJS
+- (Snake Skin) NodeJS 6 or greater
 - (Snake Skin) NPM
 
 ## Optional
 
 - (Snake) libfuzzy & ssdeep
 
-The above can be installed on Ubuntu like so:
+The above can be installed like so:
 
+`Ubuntu 17.10`
 ```bash
-apt-get install libyaml-dev mongodb nodejs npm python3-dev python3-pip redis-server libfuzzy-dev ssdeep
+# Install dependencies
+sudo apt-get install libyaml-dev mongodb nodejs npm python3-dev python3-pip redis-server libfuzzy-dev ssdeep
+```
+
+`Ubuntu 16.04`
+```bash
+# Install cURL
+sudo apt-get install curl
+
+# Add repository for MongoDB 3.6
+sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
+
+# Add repository for nodejs 8
+curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+
+# Install dependencies
+sudo apt-get update
+sudo apt-get install libyaml-dev mongodb-org nodejs python3-dev python3-pip redis-server libfuzzy-dev ssdeep
+
+# Update pip and setuptools
+sudo -H pip3 install --upgrade pip setuptools
 ```
 
 # Install
