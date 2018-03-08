@@ -191,6 +191,25 @@ An overview of a sample that has been uploaded to Snake, with additional data en
 
 ![details](https://github.com/countercept/snake/raw/master/images/details.png)
 
+## Notes View
+
+Stores an user written notes about the sample.
+
+![notes](https://github.com/countercept/snake/raw/master/images/notes.png)
+
+## Analysis View
+
+This view is used to execute and view commands on a sample.
+
+![analysis](https://github.com/countercept/snake/raw/master/images/analysis.png)
+
+## Interfaces View
+
+This view is used to communicate with external services in relation to a sample.
+
+![interfaces](https://github.com/countercept/snake/raw/master/images/interfaces.png)
+
+
 # Configuration
 
 For an overview of Snake's settings, please see [Snake](https://github.com/countercept/snake-core#configuration)
