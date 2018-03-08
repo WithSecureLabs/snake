@@ -76,7 +76,7 @@ This method will install Snake and the Web UI (Snake Skin) into the home directo
 > Note: Requires virtualenv
 
 ```bash
-git clone https://gitlab.countercept.mwr/alex.kornitzer/snake.git
+git clone https://github.com/countercept/snake.git
 cd snake
 sys/user.sh
 ```
@@ -119,7 +119,7 @@ This is the preferred method and will install Snake and the Web UI (Snake Skin) 
 > Note: Requires nginx
 
 ```bash
-git clone https://gitlab.countercept.mwr/alex.kornitzer/snake.git
+git clone https://github.com/countercept/snake.git
 cd snake
 sys/install.sh
 ```
