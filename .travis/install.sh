@@ -12,17 +12,23 @@ sudo -H pip3 install --upgrade pip setuptools
 
 # Make sure services are running
 sudo systemctl start mongod
-sudo systemctl start redis-server
+sudo systemctl start redis
 
 # Try and install
 sys/install.sh
 
 # Check the install
-systemctl start snake-pit
-systemctl start snake
-systemctl stop nginx
-systemctl start nginx
+sudo systemctl start snake-pit
+sudo systemctl start snake
+sudo systemctl stop nginx
+sudo systemctl start nginx
+
+# Wait
+sleep 10
 
 # Use curl to test
-curl 'http://127.0.0.1:5000'
+curl 'http://127.0.0.1:5000/api'
 curl 'http://127.0.0.1:8000'
+
+# Exit cleanly
+exit 0

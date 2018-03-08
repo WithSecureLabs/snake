@@ -1,10 +1,10 @@
-stages:
-  - deploy
-
-services:
-  redis-server
+dist: xenial
+language: generic
 
 sudo: required
+
+stages:
+  - deploy
 
 jobs:
   include:
