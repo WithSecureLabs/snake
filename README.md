@@ -1,5 +1,3 @@
-[![Build Status](https://travis-ci.org/countercept/snake.svg?branch=master)](https://travis-ci.org/countercept/snake)
-
 <pre>
  _   _   _   _     _   _   _   _     _   _   _   _     _           _     _   _   _   _
 |_| |_| |_| |_|   |_| |_| |_| |_|   |_| |_| |_| |_|   |_|         |_|   |_| |_| |_| |_|
