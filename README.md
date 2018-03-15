@@ -38,7 +38,7 @@ There is more to Snake than just the above, below is a summary:
 - [snake-charmer](https://github.com/countercept/snake-charmer): The regression based test suite.
 - [snake-scales](https://github.com/countercept/snake-scales): The official repository of snake scales (plugins).
 - [snake-skin](https://github.com/countercept/snake-skin): The Web UI.
-- [snake-tail](https://github.com/countercept/snake-tail): The UNIX based command line UI (Coming Soon).
+- [snake-tail](https://github.com/countercept/snake-tail): The UNIX based command line UI.
 
 # Dependencies
 
