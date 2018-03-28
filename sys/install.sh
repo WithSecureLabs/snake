@@ -116,6 +116,9 @@ sudo systemctl enable snake
 cd snake-skin
 npm install
 npm run build
+if [ -d /var/www/snake-skin ]; then
+  sudo rm -Rf /var/www/snake-skin
+fi
 sudo mv dist /var/www/snake-skin
 cd ../
 

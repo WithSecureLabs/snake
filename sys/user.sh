@@ -89,5 +89,8 @@ fi
 cd snake-skin
 npm install
 npm run build
+if [ -d ~/.snake-skin ]; then
+  rm -Rf ~/.snake-skin
+fi
 mv dist ~/.snake-skin
 cd ../
