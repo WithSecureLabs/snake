@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# Exit on any error
+set -e
+
 which git >/dev/null 2>&1
 if [ ! $? = 0 ]; then
   echo 'git not found!'
