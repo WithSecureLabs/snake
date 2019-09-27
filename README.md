@@ -50,7 +50,7 @@ There are a few dependencies to install Snake and Web UI (Snake Skin).
 - (Snake) MongoDB 3.4 or greater
 - (Snake) Python 3.5 or greater
 - (Snake) Redis
-- (Snake Skin) NodeJS 6 or greater
+- (Snake Skin) NodeJS 8 or greater
 - (Snake Skin) NPM
 
 ## Optional
