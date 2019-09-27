@@ -40,11 +40,45 @@ There is more to Snake than just the above, below is a summary:
 - [snake-skin](https://github.com/countercept/snake-skin): The Web UI.
 - [snake-tail](https://github.com/countercept/snake-tail): The UNIX based command line UI.
 
-# Dependencies
+# Install
+
+There are a few ways to install Snake, but the install scripts below will install Snake and the Web UI (Snake Skin).
+
+> Note: To install these components individually refer to their respective repositories.
+
+## Docker
+
+Snake can be run simply with the following commands:
+
+```bash
+# Get the lastest version of Snake
+git clone https://github.com/countercept/snake.git
+git submodule init
+git submodule update
+
+# Run Snake
+sudo docker-compose up
+```
+
+Snake scales can be installed by exec'ing into the Snake container and running `snake install`:
+
+```bash
+# Exec into the Snake container
+sudo docker exec -it snake_snake_1 /entrypoint.sh /bin/bash
+
+# Install a scale
+snake install SCALE_NAME
+```
+
+## Production
+
+This is the preferred method and will install Snake and the Web UI (Snake Skin) into the UNIX system.
+
+### Dependencies
 
 There are a few dependencies to install Snake and Web UI (Snake Skin).
 
-## Required
+### Required
 
 - (Snake) LibYAML
 - (Snake) MongoDB 3.4 or greater
@@ -53,7 +87,7 @@ There are a few dependencies to install Snake and Web UI (Snake Skin).
 - (Snake Skin) NodeJS 8 or greater
 - (Snake Skin) NPM
 
-## Optional
+#### Optional
 
 - (Snake) libfuzzy & ssdeep
 
@@ -84,59 +118,6 @@ sudo apt-get install libyaml-dev mongodb-org nodejs python3-dev python3-pip redi
 # Update pip and setuptools
 sudo -H pip3 install --upgrade pip setuptools
 ```
-
-# Install
-
-There are a few ways to install Snake, but the install scripts below will install Snake and the Web UI (Snake Skin).
-
-> Note: To install these components individually refer to their respective repositories.
-
-## Basic
-
-This method will install Snake and the Web UI (Snake Skin) into the home directory.
-
-> Note: Requires virtualenv
-
-```bash
-git clone https://github.com/countercept/snake.git
-cd snake
-sys/user.sh
-```
-
-To start Snake:
-
-```bash
-# Source the virtual environment
-source ~/.snake/venv/bin/activate
-
-# Start the command workers
-celery worker --app snake.worker --logfile ~/.snake/log/%n%I.log &
-
-# Start Snake
-snaked &
-
-# Or
-
-# Start Snake in debug mode (log to console)
-snaked -d
-```
-
-To serve Snake Skin:
-
-```bash
-# Source the virtual environment
-source ~/.snake/venv/bin/activate
-
-# Navigate to Snake Skin
-cd ~/.snake-skin
-
-# Serve with http.server (port: 8000)
-python -m http.server &
-```
-
-## Production
-
-This is the preferred method and will install Snake and the Web UI (Snake Skin) into the UNIX system.
 
 > Note: Requires nginx
 
