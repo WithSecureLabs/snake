@@ -54,9 +54,13 @@ if [ "$1" = 'snake' ]; then
   nginx
 
   # Run a snake pit in background as snaked
-#   CELERYD_LOG_LEVEL="INFO"
-#   CELERYD_OPTS="--concurrency=8"
-#   exec /usr/local/bin/celery worker -A snake.worker --uid snaked --loglevel=${CELERYD_LOG_LEVEL} ${CELERYD_OPTS} --pidfile="/var/run/snake/%n.pid" --detach
+  (
+    CELERYD_LOG_LEVEL="INFO"
+    CELERYD_OPTS="--concurrency=8 "
+    CELERYD_PIDFILE="/var/run/snake/%n.pid"
+    CELERYD_LOGFILE="/var/log/snake/%n%I.log"
+    exec /usr/local/bin/celery worker -A snake.worker --uid snaked --pidfile=${CELERYD_PIDFILE} --loglevel=${CELERYD_LOG_LEVEL} -f ${CELERYD_LOGFILE} ${CELERYD_OPTS} --detach
+  )
 
   # Run snake as the user snaked
   exec runuser -u snaked -- /usr/local/bin/snaked -d
