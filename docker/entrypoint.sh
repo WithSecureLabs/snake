@@ -4,7 +4,14 @@
 export SNAKE_PYTHON_DIR=/var/lib/snake/scales
 export PYTHONPATH="/var/lib/snake/scales/lib/python`python3 -c "import sys; print('{}.{}'.format(sys.version_info[0], sys.version_info[1]))"`/site-packages"
 
-if [ "$1" = 'snake' ]; then
+SNAKE_PIT_CONCURRENCY=${SNAKE_PIT_CONCURRENCY:-8}
+
+# Commands:
+# snake - runs core and pit together (pit running as daemon)
+# snake-core - runs core only, with snake-skin
+# snake-pit - runs pit only in foreground
+
+if [ "$1" = 'snake' ] || [ "$1" = 'snake-core' ] || [ "$1" = 'snake-pit' ]; then
   sed -i 's/address: 127.0.0.1/address: 0.0.0.0/' /etc/snake/snake.conf
 
   if [ $MONGODB_ADDRESS ] && [ $MONGODB_PORT ]; then
@@ -50,20 +57,31 @@ if [ "$1" = 'snake' ]; then
   chown -R snaked:snaked /var/db/snake
   chown -R snaked:snaked /var/lib/snake
 
+  if [ "$1" = 'snake' ]; then
+    # Run a snake pit in background as snaked
+    (
+      CELERYD_LOG_LEVEL="INFO"
+      CELERYD_PIDFILE="/var/run/snake/%n.pid"
+      CELERYD_LOGFILE="/var/log/snake/%n%I.log"
+      CELERYD_OPTS="--concurrency=${SNAKE_PIT_CONCURRENCY}"
+      exec /usr/local/bin/celery worker -A snake.worker --uid snaked --pidfile=${CELERYD_PIDFILE} --loglevel=${CELERYD_LOG_LEVEL} -f ${CELERYD_LOGFILE} ${CELERYD_OPTS} --detach
+    )
+  fi
+fi
+
+if [ "$1" = 'snake' ] || [ "$1" = 'snake-core' ]; then
   # Run nginx in background
   nginx
 
-  # Run a snake pit in background as snaked
-  (
-    CELERYD_LOG_LEVEL="INFO"
-    CELERYD_OPTS="--concurrency=8 "
-    CELERYD_PIDFILE="/var/run/snake/%n.pid"
-    CELERYD_LOGFILE="/var/log/snake/%n%I.log"
-    exec /usr/local/bin/celery worker -A snake.worker --uid snaked --pidfile=${CELERYD_PIDFILE} --loglevel=${CELERYD_LOG_LEVEL} -f ${CELERYD_LOGFILE} ${CELERYD_OPTS} --detach
-  )
-
-  # Run snake as the user snaked
+  # Run snake as the user, snaked
   exec runuser -u snaked -- /usr/local/bin/snaked -d
+elif [ "$1" = 'snake-pit' ]; then
+  # Run a snake pit in foreground as snaked
+  CELERYD_LOG_LEVEL="INFO"
+  CELERYD_PIDFILE="/var/run/snake/%n.pid"
+  CELERYD_LOGFILE="/var/log/snake/%n%I.log"
+  CELERYD_OPTS="--concurrency=${SNAKE_PIT_CONCURRENCY}"
+  exec /usr/local/bin/celery worker -A snake.worker --uid snaked --pidfile=${CELERYD_PIDFILE} --loglevel=${CELERYD_LOG_LEVEL} -f ${CELERYD_LOGFILE} ${CELERYD_OPTS}
 fi
 
 exec "$@"

@@ -1,72 +1,79 @@
 version: "3"
-services:
-  redis:
-    image: redis:latest
-    networks:
-      - snake
-
-  mongo:
-    image: mongo:latest
-    networks:
-      - snake
-    volumes:
-      - mongodb:/data/db
-
-  snake:
-    build:
-      context: ./snake-core/
-      dockerfile: docker/Dockerfile.snake
-    networks:
-      - snake
-    ports:
-      - "5000:5000"
-    environment:
-      - MONGODB_ADDRESS=mongo
-      - MONGODB_PORT=27017
-      - REDIS_ADDRESS=redis
-      - REDIS_PORT=6379
-    volumes:
-      - conf:/etc/snake/scales
-      - samples:/var/db/snake
-      - scales:/var/lib/snake/scales
-
-  snake-pit:
-    build:
-      context: ./snake-core/
-      dockerfile: docker/Dockerfile.pit
-    deploy:
-      replicas: 1
-    networks:
-      - snake
-    environment:
-      - MONGODB_ADDRESS=mongo
-      - MONGODB_PORT=27017
-      - REDIS_ADDRESS=redis
-      - REDIS_PORT=6379
-    volumes:
-      - conf:/etc/snake/scales
-      - samples:/var/db/snake
-      - scales:/var/lib/snake/scales
-
-  snake-skin:
-    build:
-      context: ./snake-skin/
-      dockerfile: docker/Dockerfile
-    depends_on:
-      - snake
-    networks:
-      - snake
-    ports:
-      - "8080:80"
-    environment:
-      - SNAKE_ADDRESS=snake
-      - SNAKE_PORT=5000
-
-networks:
-  snake:
 
 volumes:
   conf:
   mongodb:
   samples:
   scales:
+
+services:
+  redis:
+    image: redis:latest
+
+  mongo:
+    image: mongo:latest
+    volumes:
+      - mongodb:/data/db
+
+  ## Comment out to run core and pit as separate services (and uncomment below)
+  snake:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile
+    depends_on:
+      - mongo
+      - redis
+    ports:
+      - "5000:5000"
+      - "8080:80"
+    environment:
+      - MONGODB_ADDRESS=mongo
+      - MONGODB_PORT=27017
+      - REDIS_ADDRESS=redis
+      - REDIS_PORT=6379
+    volumes:
+      - conf:/etc/snake/scales
+      - samples:/var/db/snake
+      - scales:/var/lib/snake/scales
+    
+  ## Uncomment to run core separately
+  # snake-core:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/Dockerfile
+  #   depends_on:
+  #     - mongo
+  #     - redis
+  #   ports:
+  #     - "5000:5000"
+  #     - "8080:80"
+  #   environment:
+  #     - MONGODB_ADDRESS=mongo
+  #     - MONGODB_PORT=27017
+  #     - REDIS_ADDRESS=redis
+  #     - REDIS_PORT=6379
+  #   volumes:
+  #     - conf:/etc/snake/scales
+  #     - samples:/var/db/snake
+  #     - scales:/var/lib/snake/scales
+  #   command: snake-core
+
+  ## Uncomment to run workers separately
+  # snake-pit:
+  #   build:
+  #     context: .
+  #     dockerfile: docker/Dockerfile
+  #   depends_on:
+  #     - mongo
+  #     - redis
+  #   replicas: 1
+  #   environment:
+  #     - MONGODB_ADDRESS=mongo
+  #     - MONGODB_PORT=27017
+  #     - REDIS_ADDRESS=redis
+  #     - REDIS_PORT=6379
+  #   volumes:
+  #     - conf:/etc/snake/scales
+  #     - samples:/var/db/snake
+  #     - scales:/var/lib/snake/scales
+  #   command: snake-pit

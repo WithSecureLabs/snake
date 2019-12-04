@@ -24,7 +24,6 @@ RUN apt update \
     && mkdir -p /var/cache/snake \
     && mkdir -p /var/db/snake \
     && mkdir -p /var/log/snake \
-    && mkdir -p /var/log/snake-pit \
     && mkdir -p /var/lib/snake/scales \
     && chown snaked:snaked -R /etc/snake \
     && chown snaked:snaked -R /etc/snake/scales \
@@ -32,8 +31,7 @@ RUN apt update \
     && chown snaked:snaked -R /var/cache/snake \
     && chown snaked:snaked -R /var/db/snake \
     && chown snaked:snaked -R /var/log/snake \
-    && chown snaked:snaked -R /var/log/snake-pit \
-    && chown snaked:snaked -R /var/lib/snake/scales
+    && chown snaked:snaked -R /var/lib/snake
 
 COPY snake-core /tmp/snake
 RUN pip3 install /tmp/snake[ssdeep] \
@@ -43,7 +41,7 @@ COPY docker/entrypoint.sh /entrypoint.sh
 COPY docker/nginx.conf /etc/nginx/nginx.conf
 COPY --from=builder /snake-skin/dist /var/www/snake-skin
 
-VOLUME [ "/etc/snake", "/var/db/snake", "/var/lib/snake" ]
+VOLUME [ "/etc/snake", "/var/db/snake", "/var/lib/snake/scales" ]
 EXPOSE 80
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["snake"]
