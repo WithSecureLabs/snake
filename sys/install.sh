@@ -56,11 +56,6 @@ if [ ! $? = 0 ]; then
   echo 'redis not found!'
   exit 1
 fi
-which nginx >/dev/null 2>&1
-if [ ! $? = 0 ]; then
-  echo 'nginx not found!'
-  exit 1
-fi
 
 
 # Install Snake
@@ -101,6 +96,7 @@ fi
 
 # Install systemd services
 sudo cp $SNAKE_DIR/data/systemd/* /etc/systemd/system
+sudo cp sys/snake-skin.service /etc/systemd/system
 
 # Address permissions
 sudo chown snaked:snaked -R /etc/snake
@@ -122,14 +118,8 @@ npm run build
 if [ -d /var/www/snake-skin ]; then
   sudo rm -Rf /var/www/snake-skin
 fi
-sudo mv dist /var/www/snake-skin
-cd ../
+sudo cp -Rf ./{node_modules,__sapper__,static} /var/www/snake-skin/
 
-# Create nginx conf and link if needed
-sudo cp -Rfn sys/nginx.conf /etc/nginx/sites-available/snake-skin.example
-if [ ! -f /etc/nginx/sites-available/snake-skin ]; then
-  sudo cp /etc/nginx/sites-available/snake-skin.example /etc/nginx/sites-available/snake-skin
-fi
-if [ ! -f /etc/nginx/sites-enabled/snake-skin ]; then
-  sudo ln -s /etc/nginx/sites-available/snake-skin /etc/nginx/sites-enabled/snake-skin
-fi
+sudo systemctl enable snake-skin
+
+cd ../

@@ -1,21 +1,4 @@
-<pre>
- _   _   _   _     _   _   _   _     _   _   _   _     _           _     _   _   _   _
-|_| |_| |_| |_|   |_| |_| |_| |_|   |_| |_| |_| |_|   |_|         |_|   |_| |_| |_| |_|
- _                 _           _     _           _     _           _     _
-|_|               |_|         |_|   |_|         |_|   |_|         |_|   |_|
- _                 _           _     _           _     _       _         _
-|_|               |_|         |_|   |_|         |_|   |_|     |_|       |_|
- _   _   _   _     _           _     _   _   _   _     _   _             _   _   _   _
-|_| |_| |_| |_|   |_|         |_|   |_| |_| |_| |_|   |_| |_|           |_| |_| |_| |_|
-             _     _           _     _           _     _       _         _
-            |_|   |_|         |_|   |_|         |_|   |_|     |_|       |_|
-             _     _           _     _           _     _           _     _
-            |_|   |_|         |_|   |_|         |_|   |_|         |_|   |_|
- _   _   _   _     _           _     _           _     _           _     _   _   _   _
-|_| |_| |_| |_|   |_|         |_|   |_|         |_|   |_|         |_|   |_| |_| |_| |_|
-
-By Countercept
-</pre>
+![banner](https://github.com/countercept/snake/raw/master/images/banner.png)
 
 # Introduction
 
@@ -119,8 +102,6 @@ sudo apt-get install libyaml-dev mongodb-org nodejs python3-dev python3-pip redi
 sudo -H pip3 install --upgrade pip setuptools
 ```
 
-> Note: Requires nginx
-
 ```bash
 git clone https://github.com/countercept/snake.git
 cd snake
@@ -139,8 +120,7 @@ To serve Snake Skin (port: 8000):
 
 ```bash
 # Start Nginx to host Snake Skin
-systemctl stop nginx
-systemctl start nginx
+systemctl start snake-skin
 ```
 
 # Scales (Plugins)

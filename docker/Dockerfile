@@ -1,22 +1,10 @@
-# Build snake-skin
-FROM node:12.13.1-alpine as builder
-WORKDIR /snake-skin
-COPY snake-skin/package.json /snake-skin
-RUN npm install
-COPY snake-skin /snake-skin
-RUN npm run build
-
-
 # Build system
 FROM debian:buster-20191118-slim
 RUN apt update \
     && apt install -y \
-        nginx git libfuzzy-dev python3 python3-pip ssdeep \
+        git libfuzzy-dev python3 python3-pip ssdeep \
     && rm -rf /var/lib/apt \
     && rm -rf /var/cache/apt \
-    # nginx logs forward
-    && ln -sf /dev/stdout /var/log/nginx/access.log \
-    && ln -sf /dev/stderr /var/log/nginx/error.log \
     # user and directories
     && useradd -u 2000 -r -s /sbin/nologin -d /var/cache/snake snaked \
     && mkdir -p /etc/snake/scales \
@@ -38,11 +26,8 @@ RUN pip3 install /tmp/snake[ssdeep] \
     && cp /tmp/snake/snake/data/config/snake.conf /etc/snake/snake.conf
 
 COPY docker/entrypoint.sh /entrypoint.sh
-COPY docker/nginx.conf /etc/nginx/nginx.conf
-COPY --from=builder /snake-skin/dist /var/www/snake-skin
 
 VOLUME [ "/etc/snake", "/var/db/snake", "/var/lib/snake/scales" ]
 EXPOSE 80
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["snake"]
-

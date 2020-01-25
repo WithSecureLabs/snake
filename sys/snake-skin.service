@@ -1,0 +1,15 @@
+[Unit]
+Description=Snake Skin Daemon
+After=network.target
+
+[Service]
+User=snaked
+Group=snaked
+RuntimeDirectory=snake
+WorkingDirectory=/var/www/snake-skin
+Restart=always
+ExecStart=/bin/sh -c 'node __sapper__/build'
+PIDFile=/var/run/snake-skin/snake-skin.pid
+
+[Install]
+WantedBy=multi-user.target

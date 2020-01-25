@@ -8,7 +8,7 @@ SNAKE_PIT_CONCURRENCY=${SNAKE_PIT_CONCURRENCY:-8}
 
 # Commands:
 # snake - runs core and pit together (pit running as daemon)
-# snake-core - runs core only, with snake-skin
+# snake-core - runs core only
 # snake-pit - runs pit only in foreground
 
 if [ "$1" = 'snake' ] || [ "$1" = 'snake-core' ] || [ "$1" = 'snake-pit' ]; then
@@ -41,15 +41,15 @@ if [ "$1" = 'snake' ] || [ "$1" = 'snake-core' ] || [ "$1" = 'snake-pit' ]; then
   fi
 
   if [ $SNAKE_SCALES_DIR ]; then
-    sed -i "s/snake_scale_dirs: ['\/home\/alex\/Developer\/snake-scales']/snake_scale_dirs: [$SNAKE_SCALES_DIR]/" /etc/snake/snake.conf
+    sed -i "s/snake_scale_dirs: \[\]/snake_scale_dirs: \[${SNAKE_SCALES_DIR//\//\\/}\]/" /etc/snake/snake.conf
   fi
 
   if [ $SNAKE_STRIP_EXTENSION ]; then
-    sed -i "s/strip_extensions: ['inactive', 'infected', 'safety']/strip_extensions: [$SNAKE_STRIP_EXTENSION]/" /etc/snake/snake.conf
+    sed -i "s/strip_extensions: \['inactive', 'infected', 'safety'\]/strip_extensions: \[${SNAKE_STRIP_EXTENSION//\//\\/}\]/" /etc/snake/snake.conf
   fi
 
   if [ $SNAKE_ZIP_PASSWORDS ]; then
-    sed -i "s/zip_passwords: ['inactive', 'infected', 'password']/zip_passwords: [$SNAKE_ZIP_PASSWORDS]/" /etc/snake/snake.conf
+    sed -i "s/zip_passwords: \['inactive', 'infected', 'password'\]/zip_passwords: \[${SNAKE_ZIP_PASSWORDS//\//\\/}\]/" /etc/snake/snake.conf
   fi
 
   # Ensure that mountpoints are owned by us
@@ -70,9 +70,6 @@ if [ "$1" = 'snake' ] || [ "$1" = 'snake-core' ] || [ "$1" = 'snake-pit' ]; then
 fi
 
 if [ "$1" = 'snake' ] || [ "$1" = 'snake-core' ]; then
-  # Run nginx in background
-  nginx
-
   # Run snake as the user, snaked
   exec runuser -u snaked -- /usr/local/bin/snaked -d
 elif [ "$1" = 'snake-pit' ]; then
