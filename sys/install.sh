@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Exit on any error
 set -e
@@ -73,7 +73,9 @@ SNAKE_DIR=`python3 -c 'import imp; print(imp.find_module("snake")[1])'`
 
 # Create user
 # NOTE: use the cache dir for the home folder, whats the harm
-sudo useradd -r -s /sbin/nologin -d /var/cache/snake snaked
+if [ $(id -u snaked) = 0 ]; then
+  sudo useradd -r -s /sbin/nologin -d /var/cache/snake snaked
+fi
 
 # Create directories
 sudo mkdir -p /var/cache/snake
@@ -118,6 +120,7 @@ npm run build
 if [ -d /var/www/snake-skin ]; then
   sudo rm -Rf /var/www/snake-skin
 fi
+sudo mkdir -p /var/www/snake-skin
 sudo cp -Rf ./{node_modules,__sapper__,static} /var/www/snake-skin/
 
 sudo systemctl enable snake-skin
