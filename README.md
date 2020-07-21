@@ -116,10 +116,10 @@ systemctl start snake-pit
 systemctl start snake
 ```
 
-To serve Snake Skin (port: 8000):
+To serve Snake Skin (port: 3000):
 
 ```bash
-# Start Nginx to host Snake Skin
+# Start Snake Skin
 systemctl start snake-skin
 ```
 
