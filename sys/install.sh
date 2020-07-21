@@ -73,7 +73,8 @@ SNAKE_DIR=`python3 -c 'import imp; print(imp.find_module("snake")[1])'`
 
 # Create user
 # NOTE: use the cache dir for the home folder, whats the harm
-if [ $(id -u snaked) = 0 ]; then
+$(id -u snaked) >/dev/null || ret=$?
+if [ $ret -ne 0 ]; then
   sudo useradd -r -s /sbin/nologin -d /var/cache/snake snaked
 fi
 
