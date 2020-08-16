@@ -64,6 +64,7 @@ if [ "$1" = 'snake' ] || [ "$1" = 'snake-core' ] || [ "$1" = 'snake-pit' ]; then
       CELERYD_PIDFILE="/var/run/snake/%n.pid"
       CELERYD_LOGFILE="/var/log/snake/%n%I.log"
       CELERYD_OPTS="--concurrency=${SNAKE_PIT_CONCURRENCY}"
+      rm -f /var/run/snake/celery.pid
       exec /usr/local/bin/celery worker -A snake.worker --uid snaked --pidfile=${CELERYD_PIDFILE} --loglevel=${CELERYD_LOG_LEVEL} -f ${CELERYD_LOGFILE} ${CELERYD_OPTS} --detach
     )
   fi
@@ -78,6 +79,7 @@ elif [ "$1" = 'snake-pit' ]; then
   CELERYD_PIDFILE="/var/run/snake/%n.pid"
   CELERYD_LOGFILE="/var/log/snake/%n%I.log"
   CELERYD_OPTS="--concurrency=${SNAKE_PIT_CONCURRENCY}"
+  rm -f /var/run/snake/celery.pid
   exec /usr/local/bin/celery worker -A snake.worker --uid snaked --pidfile=${CELERYD_PIDFILE} --loglevel=${CELERYD_LOG_LEVEL} -f ${CELERYD_LOGFILE} ${CELERYD_OPTS}
 fi
 
