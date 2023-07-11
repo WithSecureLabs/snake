@@ -1,10 +1,10 @@
 # Build system
-FROM debian:buster-20191118-slim
+FROM debian:stable-slim
 RUN apt update \
-    && apt install -y \
-        git libfuzzy-dev python3 python3-pip ssdeep \
+    && apt install -y git libfuzzy-dev libmagic-dev python3 python3-poetry ssdeep \
     && rm -rf /var/lib/apt \
     && rm -rf /var/cache/apt \
+    && ln -s /usr/bin/python3 /usr/bin/python \
     # user and directories
     && useradd -u 2000 -r -s /sbin/nologin -d /var/cache/snake snaked \
     && mkdir -p /etc/snake/scales \
@@ -22,12 +22,13 @@ RUN apt update \
     && chown snaked:snaked -R /var/lib/snake
 
 COPY snake-core /tmp/snake
-RUN pip3 install /tmp/snake[ssdeep] \
+RUN poetry config virtualenvs.create false
+RUN poetry install --all-extras -C /tmp/snake \
     && cp /tmp/snake/snake/data/config/snake.conf /etc/snake/snake.conf
 
 COPY docker/entrypoint.sh /entrypoint.sh
 
 VOLUME [ "/etc/snake", "/var/db/snake", "/var/lib/snake/scales" ]
-EXPOSE 80
+EXPOSE 5000
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["snake"]

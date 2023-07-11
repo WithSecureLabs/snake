@@ -14,14 +14,22 @@ SNAKE_PIT_CONCURRENCY=${SNAKE_PIT_CONCURRENCY:-8}
 if [ "$1" = 'snake' ] || [ "$1" = 'snake-core' ] || [ "$1" = 'snake-pit' ]; then
   sed -i 's/address: 127.0.0.1/address: 0.0.0.0/' /etc/snake/snake.conf
 
-  if [ $MONGODB_ADDRESS ] && [ $MONGODB_PORT ]; then
+  if [ $MONGODB_URI ]; then
+    sed -i "s/mongodb: \"mongodb:\/\/localhost:27017\"//" /etc/snake/snake.conf
+    echo -e "mongodb: '$MONGODB_URI'\n" >> /etc/snake/snake.conf
+  elif [ $MONGODB_ADDRESS ] && [ $MONGODB_PORT ]; then
     sed -i "s/mongodb: \"mongodb:\/\/localhost:27017\"/mongodb: \"mongodb:\/\/$MONGODB_ADDRESS:$MONGODB_PORT\"/" /etc/snake/snake.conf
   else
     echo "Please pass values for the MONGODB_ADDRESS and MONGODB_PORT"
     exit 1
   fi
 
-  if [ $REDIS_ADDRESS ] && [ $REDIS_PORT ]; then
+  if [ $REDIS_URI ]; then
+    sed -i "s/backend: 'redis:\/\/localhost:6379'//" /etc/snake/snake.conf
+    sed -i "s/broker: 'redis:\/\/localhost:6379\/0'//" /etc/snake/snake.conf
+    echo -e "backend: '$REDIS_URI'\n" >> /etc/snake/snake.conf
+    echo -e "broker: '$REDIS_URI'\n" | sed -r 's/\?/\/0\?/' >> /etc/snake/snake.conf
+  elif [ $REDIS_ADDRESS ] && [ $REDIS_PORT ]; then
     sed -i "s/backend: 'redis:\/\/localhost:6379'/backend: 'redis:\/\/$REDIS_ADDRESS:$REDIS_PORT'/" /etc/snake/snake.conf
     sed -i "s/broker: 'redis:\/\/localhost:6379\/0'/broker: 'redis:\/\/$REDIS_ADDRESS:$REDIS_PORT\/0'/" /etc/snake/snake.conf
   else
@@ -38,6 +46,15 @@ if [ "$1" = 'snake' ] || [ "$1" = 'snake-core' ] || [ "$1" = 'snake-pit' ]; then
 
   if [ $SNAKE_COMMAND_AUTORUNS ]; then
     sed -i "s/command_autoruns: True/command_autoruns: $SNAKE_COMMAND_AUTORUNS/" /etc/snake/snake.conf
+  fi
+
+  if [ $SNAKE_OPENID_URI ]; then
+    echo -e "authentication:\n  scheme: 'oauth'\n  openid_url: '$SNAKE_OPENID_URI'\n" >> /etc/snake/snake.conf
+  fi
+
+  if [ $SNAKE_S3_BUCKET_NAME ]; then
+    sed -i "s/file_db: '\/var\/db\/snake'/file_db: '$SNAKE_S3_BUCKET_NAME'/" /etc/snake/snake.conf
+    sed -i "s/storage: 'file'/storage: 's3'/" /etc/snake/snake.conf
   fi
 
   if [ $SNAKE_SCALES_DIR ]; then
@@ -65,7 +82,7 @@ if [ "$1" = 'snake' ] || [ "$1" = 'snake-core' ] || [ "$1" = 'snake-pit' ]; then
       CELERYD_LOGFILE="/var/log/snake/%n%I.log"
       CELERYD_OPTS="--concurrency=${SNAKE_PIT_CONCURRENCY}"
       rm -f /var/run/snake/celery.pid
-      exec /usr/local/bin/celery worker -A snake.worker --uid snaked --pidfile=${CELERYD_PIDFILE} --loglevel=${CELERYD_LOG_LEVEL} -f ${CELERYD_LOGFILE} ${CELERYD_OPTS} --detach
+      exec /usr/local/bin/celery --app snake.worker worker --uid snaked --pidfile=${CELERYD_PIDFILE} --loglevel=${CELERYD_LOG_LEVEL} -f ${CELERYD_LOGFILE} ${CELERYD_OPTS} --worker_config=/etc/snake/snake.conf &
     )
   fi
 fi
@@ -80,7 +97,7 @@ elif [ "$1" = 'snake-pit' ]; then
   CELERYD_LOGFILE="/var/log/snake/%n%I.log"
   CELERYD_OPTS="--concurrency=${SNAKE_PIT_CONCURRENCY}"
   rm -f /var/run/snake/celery.pid
-  exec /usr/local/bin/celery worker -A snake.worker --uid snaked --pidfile=${CELERYD_PIDFILE} --loglevel=${CELERYD_LOG_LEVEL} -f ${CELERYD_LOGFILE} ${CELERYD_OPTS}
+  exec /usr/local/bin/celery --app snake.worker worker --uid snaked --pidfile=${CELERYD_PIDFILE} --loglevel=${CELERYD_LOG_LEVEL} -f ${CELERYD_LOGFILE} ${CELERYD_OPTS} --worker_config=/etc/snake/snake.conf
 fi
 
 exec "$@"
